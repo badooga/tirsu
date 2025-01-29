@@ -5,7 +5,7 @@ tir_alphabet = set(
 )
 
 
-def in_alphabet(letter: str) -> bool:
+def in_alphabet(letter) -> bool:
     """Checks if the supplied letter is in the Tir'su alphabet."""
 
-    return letter.lower() in tir_alphabet
+    return letter.strip() == "" or letter.lower() in tir_alphabet

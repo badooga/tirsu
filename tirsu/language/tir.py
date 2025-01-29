@@ -32,6 +32,9 @@ class TirStr(UserString):
         if invalid:
             raise ValueError(f"Invalid characters found: {invalid}")
 
+    def __iter__(self):
+        yield from self.letters
+
     def __getitem__(self, key) -> Self:
         return self.__class__("".join(self.letters[key]))
 
