@@ -20,6 +20,11 @@
 - Sub-Middle (Symbol_G, Symbol_H, Symbol_N)
   - Y: 11u
 
+## Line Width
+Symbol_I has a ratio of approximately 25:443 ~ 5:88
+
+Therefore, the line width is about (25/22)u ~ 1.364u
+
 ## Elements
 
 - Down-Arms (Top Symbol_A)
