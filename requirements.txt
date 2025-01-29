@@ -1,0 +1,6 @@
+# runtime dependencies
+pycairo>==1.27.0
+
+# tests
+pytest-cov>=2.6.0
+pytest>=3.6
