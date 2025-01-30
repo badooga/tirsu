@@ -1,7 +1,7 @@
-import pytest
 from typing import Literal
 
 import numpy as np
+import pytest
 
 from .. import alphabet, tir
 

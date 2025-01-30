@@ -2,6 +2,7 @@ import pytest
 
 from .. import alphabet
 
+
 def test_tir_alphabet() -> None:
     assert len(alphabet.tir_alphabet) == 35
 
