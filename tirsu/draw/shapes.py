@@ -62,7 +62,7 @@ class DrawShape:
             vec = Lu * np.exp(1j * theta)
             self.ctx.rel_line_to(vec.real, vec.imag)
 
-    def spoke(self, r: int, L: int = 13, delta: float = np.pi / 2) -> None:
+    def spoke(self, r: int, L: float = 13, delta: float = np.pi / 2) -> None:
         self.line(r, delta, L, 0)
 
     def ellipse(
@@ -122,20 +122,41 @@ class DrawShape:
         L: int | float = 10,
         theta: float = np.pi / 4,
         direction: Literal[-1, 1] = 1,
+        spoke: bool = False,
+        h: float = 0,
+        down_only: bool = False,
+        triangle: bool = False,
     ) -> None:
-        vec = np.exp(1j * theta)
+        Lu = L * self.units
+
+        vec = np.exp(-1j * theta)
         if direction == -1:
             vec = -np.conj(vec)
 
-        up = L * self.units * vec
+        up = Lu * vec
         down = np.conj(up)
 
         with RelCoords(self.ctx, self.origin, r * self.units, delta):
-            self.ctx.rel_move_to(up.real, up.imag)
-            self.ctx.rel_line_to(-up.real, -up.imag)
-            self.ctx.rel_line_to(down.real, down.imag)
-
-            self.ctx.rel_line_to(-down.real, -down.imag)
+            if spoke:
+                if direction == -1 and not down_only:
+                    self.ctx.rel_move_to(-0.25 * self.units, 0)
+                    h -= 0.25
+                self.ctx.rel_line_to(-h * self.units, 0)
+                self.ctx.rel_line_to(h * self.units, 0)
+                if direction == -1 and not down_only:
+                    self.ctx.rel_move_to(0.25 * self.units, 0)
+            if down_only:
+                self.ctx.rel_line_to(down.real, down.imag)
+            elif triangle and direction == 1:
+                self.ctx.rel_line_to(up.real, up.imag)
+                self.ctx.rel_line_to(0, Lu * np.sqrt(2))
+            elif triangle and direction == -1:
+                self.ctx.rel_line_to(up.real, up.imag)
+                self.ctx.rel_line_to(0, Lu * np.sqrt(2))
+            else:
+                self.ctx.rel_line_to(up.real, up.imag)
+                self.ctx.rel_line_to(-up.real, -up.imag)
+                self.ctx.rel_line_to(down.real, down.imag)
             self.ctx.close_path()
 
     def vbar(self, r: float, delta: float = np.pi / 2, L: float = 10) -> None:
@@ -147,35 +168,20 @@ class DrawShape:
         delta: float = np.pi / 2,
         L: float = 10,
         direction: Literal[-1, 1] = 1,
-        fill: bool = False,
+        spoke: bool = False,
+        h: float = 0,
     ) -> None:
-        Lu = L * self.units
-
-        vec = np.exp(direction * 1j * np.pi / 4)
-        if direction == -1:
-            vec = -np.conj(vec)
-
-        up = Lu * vec
-        down = np.conj(up)
-
-        with RelCoords(self.ctx, self.origin, r * self.units, delta):
-            self.ctx.rel_move_to(up.real, up.imag)
-            self.ctx.rel_line_to(0, -Lu * np.sqrt(2))
-            self.ctx.rel_line_to(-down.real, -down.imag)
-            self.ctx.close_path()
-
-            if fill:
-                self.ctx.fill()
+        self.arms(r, delta, L, direction=direction, spoke=spoke, h=h, triangle=True)
 
     def crescent(self, r: float, delta: float = np.pi / 2, s: int = 6) -> None:
         su = s * self.units
 
         with RelCoords(self.ctx, self.origin, r * self.units, delta):
-            self.ctx.rel_move_to(0, -su / 2)
-            self.ctx.rel_line_to(0, su)
-            self.ctx.rel_line_to(su, 0)
+            self.ctx.rel_move_to(0, su / 2)
             self.ctx.rel_line_to(0, -su)
-
+            self.ctx.rel_line_to(su, 0)
             self.ctx.rel_line_to(0, su)
+
+            self.ctx.rel_line_to(0, -su)
             self.ctx.rel_line_to(-su, 0)
             self.ctx.close_path()
