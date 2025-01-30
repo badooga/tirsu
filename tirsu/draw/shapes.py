@@ -107,7 +107,7 @@ class DrawShape:
             if fill:
                 self.ctx.fill()
 
-    def circle(self, center: complex, R: int, fill: bool = False) -> None:
+    def circle(self, center: complex, R: float, fill: bool = False) -> None:
         Ru = R * self.units
         with RelCoords(self.ctx, self.origin, center, 0):
             self.ctx.rel_move_to(Ru, 0)
