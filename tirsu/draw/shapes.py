@@ -31,12 +31,11 @@ class RelCoords:
 
 
 class DrawShape:
-    def __init__(self, ctx: cairo.Context, o: complex, u: float) -> None:
+    def __init__(self, ctx: cairo.Context, o: complex) -> None:
         self.ctx = ctx
-        self.units = u
         self.origin = o
 
-        self.ctx.set_line_width(25 / 22 * u)
+        self.ctx.set_line_width(25 / 22)
         self.ctx.set_source_rgba(0, 0, 0, 1)
 
     def line(
@@ -57,9 +56,8 @@ class DrawShape:
             to be considered as the real axis. Defaults to 0.
         """
 
-        zu0, Lu = z0 * self.units, L * self.units
-        with RelCoords(self.ctx, self.origin, zu0, delta):
-            vec = Lu * np.exp(1j * theta)
+        with RelCoords(self.ctx, self.origin, z0, delta):
+            vec = L * np.exp(1j * theta)
             self.ctx.rel_line_to(vec.real, vec.imag)
 
     def spoke(self, r: int, L: float = 13, delta: float = np.pi / 2) -> None:
@@ -97,10 +95,10 @@ class DrawShape:
             t0, t1 = min(t0, t1), max(t0, t1)
             t = np.linspace(t0, t1, 100)
 
-            x, y = a * np.cos(t) * self.units, b * np.sin(t) * self.units
+            x, y = a * np.cos(t), b * np.sin(t)
             dx, dy = np.diff(x), np.diff(y)
 
-            self.ctx.move_to(r * self.units + x[0], y[0])
+            self.ctx.move_to(r + x[0], y[0])
             for dx_, dy_ in zip(dx, dy):
                 self.ctx.rel_line_to(dx_, dy_)
 
@@ -108,10 +106,9 @@ class DrawShape:
                 self.ctx.fill()
 
     def circle(self, center: complex, R: float, fill: bool = False) -> None:
-        Ru = R * self.units
         with RelCoords(self.ctx, self.origin, center, 0):
-            self.ctx.rel_move_to(Ru, 0)
-            self.ctx.arc(center.real, center.imag, Ru, 0, 2 * np.pi)
+            self.ctx.rel_move_to(R, 0)
+            self.ctx.arc(center.real, center.imag, R, 0, 2 * np.pi)
             if fill:
                 self.ctx.fill()
 
@@ -127,32 +124,30 @@ class DrawShape:
         down_only: bool = False,
         triangle: bool = False,
     ) -> None:
-        Lu = L * self.units
-
         vec = np.exp(-1j * theta)
         if direction == -1:
             vec = -np.conj(vec)
 
-        up = Lu * vec
+        up = L * vec
         down = np.conj(up)
 
-        with RelCoords(self.ctx, self.origin, r * self.units, delta):
+        with RelCoords(self.ctx, self.origin, r, delta):
             if spoke:
                 if direction == -1 and not down_only:
-                    self.ctx.rel_move_to(-0.25 * self.units, 0)
+                    self.ctx.rel_move_to(-0.25, 0)
                     h -= 0.25
-                self.ctx.rel_line_to(-h * self.units, 0)
-                self.ctx.rel_line_to(h * self.units, 0)
+                self.ctx.rel_line_to(-h, 0)
+                self.ctx.rel_line_to(h, 0)
                 if direction == -1 and not down_only:
-                    self.ctx.rel_move_to(0.25 * self.units, 0)
+                    self.ctx.rel_move_to(0.25, 0)
             if down_only:
                 self.ctx.rel_line_to(down.real, down.imag)
             elif triangle and direction == 1:
                 self.ctx.rel_line_to(up.real, up.imag)
-                self.ctx.rel_line_to(0, Lu * np.sqrt(2))
+                self.ctx.rel_line_to(0, L * np.sqrt(2))
             elif triangle and direction == -1:
                 self.ctx.rel_line_to(up.real, up.imag)
-                self.ctx.rel_line_to(0, Lu * np.sqrt(2))
+                self.ctx.rel_line_to(0, L * np.sqrt(2))
             else:
                 self.ctx.rel_line_to(up.real, up.imag)
                 self.ctx.rel_line_to(-up.real, -up.imag)
@@ -174,14 +169,12 @@ class DrawShape:
         self.arms(r, delta, L, direction=direction, spoke=spoke, h=h, triangle=True)
 
     def crescent(self, r: float, delta: float = np.pi / 2, s: int = 6) -> None:
-        su = s * self.units
+        with RelCoords(self.ctx, self.origin, r, delta):
+            self.ctx.rel_move_to(0, s / 2)
+            self.ctx.rel_line_to(0, -s)
+            self.ctx.rel_line_to(s, 0)
+            self.ctx.rel_line_to(0, s)
 
-        with RelCoords(self.ctx, self.origin, r * self.units, delta):
-            self.ctx.rel_move_to(0, su / 2)
-            self.ctx.rel_line_to(0, -su)
-            self.ctx.rel_line_to(su, 0)
-            self.ctx.rel_line_to(0, su)
-
-            self.ctx.rel_line_to(0, -su)
-            self.ctx.rel_line_to(-su, 0)
+            self.ctx.rel_line_to(0, -s)
+            self.ctx.rel_line_to(-s, 0)
             self.ctx.close_path()
