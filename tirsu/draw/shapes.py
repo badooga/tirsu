@@ -41,20 +41,23 @@ class Draw:
         self,
         z0: complex,
         L: int,
+        theta: float,
         delta: float = np.pi / 2,
     ) -> None:
         """Draws a line.
 
         Args:
-            z0 (complex): The starting point x0 + i*y0 of the line.
+            z0 (complex): The starting point x0 + i*y0 of the line, assuming the real axis is along delta.
             L (float): The length of the line.
-            delta (float, optional): The angle of the line relative
-            to the x-axis. Defaults to 0.
-            after creating the line. Defaults to True.
+            theta (float): The angle of the line relative to
+            the real axis.
+            delta (float, optional): The angle from the x-axis
+            to be considered as the real axis. Defaults to 0.
         """
 
-        with RelCoords(self.ctx, self.o, z0, delta):
-            self.ctx.rel_line_to(L * self.u, 0)
+        with RelCoords(self.ctx, self.o, z0 * self.u, delta):
+            vec = L * self.u * np.exp(1j * theta)
+            self.ctx.rel_line_to(vec.real, vec.imag)
 
     def spoke(self, r: int, L: int = 13, delta: float = np.pi / 2) -> None:
         with RelCoords(self.ctx, self.o, 0, delta):
