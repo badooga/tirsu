@@ -33,20 +33,18 @@ class RelCoords:
 class DrawShape:
     def __init__(self, ctx: cairo.Context, o: complex, u: float) -> None:
         self.ctx = ctx
-        self.origin = o
         self.units = u
+        self.origin = o
 
         self.ctx.set_line_width(25 / 22 * u)
         self.ctx.set_source_rgba(0, 0, 0, 1)
 
-        self.pad = self.ctx.get_line_width() / self.units
-
     def line(
         self,
         z0: complex,
-        L: int,
-        theta: float,
         delta: float = np.pi / 2,
+        L: float = 10,
+        theta: float = 0,
     ) -> None:
         """Draws a line.
 
@@ -59,21 +57,20 @@ class DrawShape:
             to be considered as the real axis. Defaults to 0.
         """
 
-        with RelCoords(self.ctx, self.origin, z0 * self.units, delta):
-            vec = L * self.units * np.exp(1j * theta)
+        zu0, Lu = z0 * self.units, L * self.units
+        with RelCoords(self.ctx, self.origin, zu0, delta):
+            vec = Lu * np.exp(1j * theta)
             self.ctx.rel_line_to(vec.real, vec.imag)
 
     def spoke(self, r: int, L: int = 13, delta: float = np.pi / 2) -> None:
-        with RelCoords(self.ctx, self.origin, 0, delta):
-            self.ctx.move_to(r * self.units, 0)
-            self.ctx.rel_line_to(L * self.units, 0)
+        self.line(r, delta, L, 0)
 
     def ellipse(
         self,
         r: float,
-        a: float,
-        b: float,
         delta: float = np.pi / 2,
+        a: float = 3,
+        b: float = 5,
         t0: float = 0,
         t1: float = 2 * np.pi,
         fill: bool = False,
@@ -82,8 +79,8 @@ class DrawShape:
 
         Args:
             r (float): The distance of the ellipse's center to the origin.
-            a (float): The major axis of the ellipse.
-            b (float): The minor axis of the ellipse.
+            a (float, optional): The major axis of the ellipse. Defaults to 3u.
+            b (float): The minor axis of the ellipse. Defaults to 5u.
             delta (float, optional): The angle of the ellipse's center
             from the x-axis. Defaults to 90 degrees.
             t0 (float, optional): The starting angle of the ellipse.
@@ -111,9 +108,10 @@ class DrawShape:
                 self.ctx.fill()
 
     def circle(self, center: complex, R: int, fill: bool = False) -> None:
+        Ru = R * self.units
         with RelCoords(self.ctx, self.origin, center, 0):
-            self.ctx.rel_move_to(R * self.units, 0)
-            self.ctx.arc(center.real, center.imag, R * self.units, 0, 2 * np.pi)
+            self.ctx.rel_move_to(Ru, 0)
+            self.ctx.arc(center.real, center.imag, Ru, 0, 2 * np.pi)
             if fill:
                 self.ctx.fill()
 
@@ -132,12 +130,13 @@ class DrawShape:
         up = L * self.units * vec
         down = np.conj(up)
 
-        rel = RelCoords(self.ctx, self.origin, r * self.units, delta)
-
-        with rel:
-            self.ctx.rel_line_to(up.real, up.imag)
-        with rel:
+        with RelCoords(self.ctx, self.origin, r * self.units, delta):
+            self.ctx.rel_move_to(up.real, up.imag)
+            self.ctx.rel_line_to(-up.real, -up.imag)
             self.ctx.rel_line_to(down.real, down.imag)
+
+            self.ctx.rel_line_to(-down.real, -down.imag)
+            self.ctx.close_path()
 
     def vbar(self, r: float, delta: float = np.pi / 2, L: float = 10) -> None:
         self.arms(r, delta, L / 2, np.pi / 2)
@@ -146,19 +145,37 @@ class DrawShape:
         self,
         r: float,
         delta: float = np.pi / 2,
+        L: float = 10,
         direction: Literal[-1, 1] = 1,
         fill: bool = False,
     ) -> None:
-        with RelCoords(self.ctx, self.origin, r, delta):
-            self.arms(0, 0, direction)
-            self.ctx.rel_line_to(0, 10 * np.sqrt(2) * self.units)
+        Lu = L * self.units
+
+        vec = np.exp(direction * 1j * np.pi / 4)
+        if direction == -1:
+            vec = -np.conj(vec)
+
+        up = Lu * vec
+        down = np.conj(up)
+
+        with RelCoords(self.ctx, self.origin, r * self.units, delta):
+            self.ctx.rel_move_to(up.real, up.imag)
+            self.ctx.rel_line_to(0, -Lu * np.sqrt(2))
+            self.ctx.rel_line_to(-down.real, -down.imag)
+            self.ctx.close_path()
+
             if fill:
                 self.ctx.fill()
 
-    def crescent(self, r: float, s: int = 6, delta: float = np.pi / 2) -> None:
-        self.vbar(r, delta, s + self.pad)
-        self.vbar(r + s, delta, s + self.pad)
+    def crescent(self, r: float, delta: float = np.pi / 2, s: int = 6) -> None:
+        su = s * self.units
 
-        with RelCoords(self.ctx, self.origin, r, delta):
-            self.ctx.move_to(r * self.units, -s / 2 * self.units)
-            self.ctx.rel_line_to(s * self.units, 0)
+        with RelCoords(self.ctx, self.origin, r * self.units, delta):
+            self.ctx.rel_move_to(0, -su / 2)
+            self.ctx.rel_line_to(0, su)
+            self.ctx.rel_line_to(su, 0)
+            self.ctx.rel_line_to(0, -su)
+
+            self.ctx.rel_line_to(0, su)
+            self.ctx.rel_line_to(-su, 0)
+            self.ctx.close_path()
