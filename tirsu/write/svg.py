@@ -14,17 +14,17 @@ def write_word(
     center: complex,
     radius: float,
 ) -> None:
-    draw = DrawLetter(ctx, center)
+    draw = DrawLetter(ctx, center, radius)
     draw.circle(0, radius)
 
     letters, angles = word.letters, word.angles
 
-    draw.beginning(radius, angles[0])
+    draw.beginning(angles[0])
     for letter, angle in zip(letters, angles):
         if letter == "'":
-            draw.apostrophe(radius, angle)
+            draw.apostrophe(angle)
         else:
-            getattr(draw, letter)(radius, angle)
+            getattr(draw, letter)(angle)
 
 
 def write_tirsu(
