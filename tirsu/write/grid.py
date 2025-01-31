@@ -5,33 +5,36 @@ __all__ = ["Grid"]
 
 
 class Grid:
-    def __init__(self, count: int, radius: float, padding: float | None = None) -> None:
+    def __init__(
+        self, nx: int, ny: int, radius: float, padding: float | None = None
+    ) -> None:
         if padding is None:
             padding = 0.5 * radius
 
-        self.count = count
+        self.nx = nx
+        self.ny = ny
         self.radius = radius
         self.padding = padding
 
     @property
-    def s(self) -> int:
-        return int(np.ceil(self.count**0.5))**2
-
-    @property
-    def spacing(self) -> float:
+    def units(self) -> float:
         return self.radius + 2 * self.padding
 
     @property
-    def centers(self) -> NDArray[np.complex128]:
-        x, y = np.arange(self.s), np.arange(self.s)
-        X, Y = np.meshgrid(x, y)
-
-        grid = X + 1j * Y
-        grid += (1 + 1j) / 2
-        grid = grid * self.spacing
-
-        return grid.ravel()[: self.count]
+    def x(self) -> float:
+        return self.nx * self.units
 
     @property
-    def length(self):
-        return self.s * self.spacing
+    def y(self) -> float:
+        return self.ny * self.units
+
+    @property
+    def centers(self) -> NDArray[np.complex128]:
+        ax, ay = np.arange(self.nx), np.arange(self.ny)
+        AX, AY = np.meshgrid(ax, ay)
+
+        grid = AX + 1j * AY
+        grid += (1 + 1j) / 2
+        grid *= self.units
+
+        return grid
