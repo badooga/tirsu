@@ -6,7 +6,7 @@ __all__ = ["Grid"]
 
 class Grid:
     def __init__(
-        self, nx: int, ny: int, radius: float, padding: float | None = None
+        self, nx: int, ny: int, radius: float, padding: float | None = None, scale: float = 1,
     ) -> None:
         if padding is None:
             padding = 0.5 * radius
@@ -15,6 +15,7 @@ class Grid:
         self.ny = ny
         self.radius = radius
         self.padding = padding
+        self.scale = scale
 
     @property
     def units(self) -> float:
@@ -22,11 +23,11 @@ class Grid:
 
     @property
     def x(self) -> float:
-        return self.nx * self.units
+        return self.nx * self.units * self.scale
 
     @property
     def y(self) -> float:
-        return self.ny * self.units
+        return self.ny * self.units * self.scale
 
     @property
     def centers(self) -> NDArray[np.complex128]:
@@ -37,4 +38,4 @@ class Grid:
         grid += (1 + 1j) / 2
         grid *= self.units
 
-        return grid
+        return grid * self.scale

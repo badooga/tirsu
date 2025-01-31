@@ -27,27 +27,40 @@ def write_word(
             getattr(draw, letter)(radius, angle)
 
 
-def write_phrase(
+def write_text(
     path: str | PathLike,
-    phrase: str | TirWord,
+    text: str,
     scale: float,
     orientation: Literal[-1, 1] = 1,
 ) -> None:
-    words = [TirWord(word, orientation) for word in phrase.strip().split()]
-    max_len = max(map(len, words))
-    radius = max_len  # TODO: get max from formula
+    text = text.replace(".", "\n").replace("?", "\n").replace("!", "\n").strip().lower()
 
-    grid = Grid(len(words), radius, 2 * DrawLetter.h_max)
-    L = grid.length
+    sentences: list[list[TirWord]] = []
 
-    with cairo.SVGSurface(str(path), L, L) as surface:
+    radius = 0
+    for sentence in text.split("\n"):
+        sentences.append([])
+        for word in sentence.split():
+            tirword = TirWord(word, orientation)
+            sentences[-1].append(tirword)
+            radius = max(len(tirword), radius)
+
+    ny = len(sentences)
+    nx = max(map(len, sentences))
+
+    grid = Grid(nx, ny, radius, 2 * DrawLetter.h_max)
+    centers = grid.centers
+
+    with cairo.SVGSurface(str(path), grid.x, grid.y) as surface:
         ctx = cairo.Context(surface)
 
-        #ctx.save()
-        #ctx.scale(scale, scale)
+        # ctx.save()
+        # ctx.scale(scale, scale)
 
-        for word, center in zip(words, grid.centers):
-            write_word(ctx, word, center, radius)
+        for sentence, row in zip(sentences, centers):
+            for word, center in zip(sentence, row):
+                print(word)
+                write_word(ctx, word, center, radius)
 
-        #ctx.stroke()
-        #ctx.restore()
+        # ctx.stroke()
+        # ctx.restore()
