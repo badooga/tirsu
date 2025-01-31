@@ -5,10 +5,13 @@ from .shapes import DrawShape
 
 __all__ = ["DrawLetter"]
 
+
 class DrawLetter(DrawShape):  # pylint: disable=too-many-public-methods
     h_max = 22
 
-    def __init__(self, ctx: cairo.Context, o: complex, r1: float, delta: float = 0) -> None:
+    def __init__(
+        self, ctx: cairo.Context, o: complex, r1: float, delta: float = 0
+    ) -> None:
         super().__init__(ctx, o)
         self.r1 = r1
         self.r2 = r1 + self.h_max
@@ -131,7 +134,7 @@ class DrawLetter(DrawShape):  # pylint: disable=too-many-public-methods
 
     def apostrophe(self) -> None:
         self.spoke(self.r1, self.delta, self.h_max - 9)
-        self.ellipse(self.r1 - 1.5, self.delta, 0.2, 0.2)
+        self.ellipse(self.r1 - 1.5, self.delta, 0.2, 0.2, 0, 3 * np.pi)
 
     def oa(self) -> None:
         self.o()
