@@ -60,7 +60,7 @@ class DrawShape:
             vec = L * np.exp(1j * theta)
             self.ctx.rel_line_to(vec.real, vec.imag)
 
-    def spoke(self, r: int, delta: float = np.pi / 2, L: float = 13) -> None:
+    def spoke(self, r: float, delta: float = np.pi / 2, L: float = 13) -> None:
         self.line(r, delta, L, 0)
 
     def ellipse(
