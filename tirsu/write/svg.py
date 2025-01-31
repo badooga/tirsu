@@ -5,6 +5,7 @@ import cairo
 
 from .grid import Grid
 from ..draw import DrawLetter
+
 from ..language import TirWord
 
 
@@ -19,12 +20,14 @@ def write_word(
 
     letters, angles = word.letters, word.angles
 
-    draw.beginning(angles[0])
     for letter, angle in zip(letters, angles):
+        draw.delta = angle
+        if angle == angles[0]:
+            draw.beginning()
         if letter == "'":
-            draw.apostrophe(angle)
+            draw.apostrophe()
         else:
-            getattr(draw, letter)(angle)
+            getattr(draw, letter)()
 
 
 def write_tirsu(
