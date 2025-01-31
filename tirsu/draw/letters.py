@@ -7,7 +7,7 @@ class DrawLetter(DrawShape):  # pylint: disable=too-many-public-methods
     h_max = 22
 
     def beginning(self, r, delta) -> None:
-        self.spoke(r, -self.h_max/5, delta)
+        self.spoke(r, delta, -self.h_max/5)
 
     def a(self, r, delta) -> None:
         self.arms(r + self.h_max, delta, direction=-1, spoke=True, h=self.h_max)
@@ -41,7 +41,7 @@ class DrawLetter(DrawShape):  # pylint: disable=too-many-public-methods
         self.vbar(r + self.h_max - 10, delta)
 
     def i(self, r, delta) -> None:
-        self.spoke(r, self.h_max, delta)
+        self.spoke(r, delta, self.h_max)
 
     def j(self, r, delta) -> None:
         self.arms(
@@ -59,7 +59,7 @@ class DrawLetter(DrawShape):  # pylint: disable=too-many-public-methods
         self.arms(r + self.h_max - 3, delta, 10, direction=-1, down_only=True)
 
     def l(self, r, delta) -> None:  # noqa: E743
-        self.spoke(r, self.h_max - 5 * np.sqrt(2), delta)
+        self.spoke(r, delta, self.h_max - 5 * np.sqrt(2))
         self.triangle(r + self.h_max, delta, direction=-1)
 
     def m(self, r, delta) -> None:
@@ -71,7 +71,7 @@ class DrawLetter(DrawShape):  # pylint: disable=too-many-public-methods
         self.vbar(r + self.h_max - 4 - 5 * np.sqrt(2), delta)
 
     def o(self, r, delta) -> None:
-        self.spoke(r, self.h_max - 6.5, delta)
+        self.spoke(r, delta, self.h_max - 6.5)
         self.ellipse(r + self.h_max - 6.5 + 3.5, delta, 3, 5)
 
     def p(self, r, delta) -> None:
@@ -79,7 +79,7 @@ class DrawLetter(DrawShape):  # pylint: disable=too-many-public-methods
         self.arms(r + self.h_max - 3, delta, 10, direction=-1, down_only=True)
 
     def q(self, r, delta) -> None:  # noqa: E743
-        self.spoke(r, self.h_max - 5 * np.sqrt(2), delta)
+        self.spoke(r, delta, self.h_max - 5 * np.sqrt(2))
         self.triangle(r + self.h_max - 5 * np.sqrt(2), delta, direction=1)
 
     def r(self, r, delta) -> None:
@@ -95,7 +95,7 @@ class DrawLetter(DrawShape):  # pylint: disable=too-many-public-methods
         self.line(r + self.h_max - 10.5, delta, 10, 3 * np.pi / 4)
 
     def u(self, r, delta) -> None:
-        self.spoke(r, self.h_max - 6, delta)
+        self.spoke(r, delta, self.h_max - 6)
         self.ellipse(r + self.h_max, delta, 6, 5, -3 * np.pi / 2, -np.pi / 2)
 
     def v(self, r, delta) -> None:
@@ -107,7 +107,7 @@ class DrawLetter(DrawShape):  # pylint: disable=too-many-public-methods
         self.vbar(r + self.h_max - 9.5, delta)
 
     def x(self, r, delta) -> None:
-        self.spoke(r, self.h_max - 6, delta)
+        self.spoke(r, delta, self.h_max - 6)
         self.crescent(r + self.h_max - 6, delta)
 
     def y(self, r, delta) -> None:
@@ -122,7 +122,7 @@ class DrawLetter(DrawShape):  # pylint: disable=too-many-public-methods
         self.a(r, delta)
 
     def apostrophe(self, r, delta) -> None:
-        self.spoke(r, self.h_max - 9, delta)
+        self.spoke(r, delta, self.h_max - 9)
         self.ellipse(r - 1.5, delta, 0.2, 0.2)
 
     def oa(self, r, delta) -> None:
@@ -131,26 +131,26 @@ class DrawLetter(DrawShape):  # pylint: disable=too-many-public-methods
 
     def oi(self, r, delta) -> None:
         dr = 5 * np.sqrt(2)
-        self.spoke(r, self.h_max - 6.5 - dr, delta)
+        self.spoke(r, delta, self.h_max - 6.5 - dr)
         self.ellipse(r + self.h_max - 3 - dr, delta, 3, 5)
         self.arms(r + self.h_max - dr + 0.25, delta)
 
     def ou(self, r, delta) -> None:
         dr = 1 + 6
-        self.spoke(r, self.h_max - 6 - dr, delta)
+        self.spoke(r, delta, self.h_max - 6 - dr)
         self.ellipse(r + self.h_max - 7 + 3.5, delta, 3, 5)
         self.ellipse(r + self.h_max - dr, delta, 6, 5, -3 * np.pi / 2, -np.pi / 2)
 
     def ch(self, r, delta) -> None:
         dr = -2 + 5 * np.sqrt(2)
-        self.spoke(r, self.h_max - 6.5 - dr, delta)
+        self.spoke(r, delta, self.h_max - 6.5 - dr)
         self.ellipse(r + self.h_max - 3 - dr, delta, 3, 5)
         self.vbar(r + self.h_max - 8 - dr, delta)
         self.arms(r + self.h_max, delta, direction=-1)
 
     def sh(self, r, delta) -> None:
         dr = -2.5 + 5 * np.sqrt(2)
-        self.spoke(r, self.h_max - 6.5 - dr, delta)
+        self.spoke(r, delta, self.h_max - 6.5 - dr)
         self.ellipse(r + self.h_max - 3 - dr, delta, 3, 5)
         self.arms(r + self.h_max, delta, direction=-1)
         self.line(r + self.h_max - 7.5 - dr, delta, 7, 3 * np.pi / 4)
