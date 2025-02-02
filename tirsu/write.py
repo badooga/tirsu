@@ -13,7 +13,6 @@ def write_word(
     word: TirWord,
     center: complex,
     radius: float,
-    scale: float = 1,
 ) -> None:
     draw = DrawLetter(ctx, center, radius)
     draw.circle(0, radius)
@@ -34,7 +33,6 @@ def write_tirsu(
     path: str | PathLike,
     text: str,
     orientation: Literal[-1, 1] = 1,
-    scale: float = 1,
 ) -> None:
     text = (
         text.replace(",", "")
@@ -58,7 +56,7 @@ def write_tirsu(
     ny = len(sentences)
     nx = max(map(len, sentences))
 
-    grid = Grid(nx, ny, radius, 2 * DrawLetter.h_max, scale)
+    grid = Grid(nx, ny, radius, 2 * DrawLetter.h_max)
     centers = grid.centers
 
     with cairo.SVGSurface(str(path), grid.x, grid.y) as surface:
@@ -67,4 +65,4 @@ def write_tirsu(
 
         for sentence, row in zip(sentences, centers):
             for word, center in zip(sentence, row):
-                write_word(ctx, word, center, radius, scale)
+                write_word(ctx, word, center, radius)

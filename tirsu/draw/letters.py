@@ -10,7 +10,11 @@ class DrawLetter(DrawShape):  # pylint: disable=too-many-public-methods
     h_max = 22
 
     def __init__(
-        self, ctx: cairo.Context, o: complex, r1: float, delta: float = 0
+        self,
+        ctx: cairo.Context,
+        o: complex,
+        r1: float,
+        delta: float = 0,
     ) -> None:
         super().__init__(ctx, o)
         self.r1 = r1
@@ -18,7 +22,7 @@ class DrawLetter(DrawShape):  # pylint: disable=too-many-public-methods
         self.delta = delta
 
     def beginning(self) -> None:
-        self.spoke(self.r1, self.delta, -self.h_max / 4)
+        self.spoke(self.r1, self.delta, -self.h_max / 4.5)
 
     def a(self) -> None:
         self.arms(self.r2, self.delta, direction=-1, spoke=True, h=self.h_max)

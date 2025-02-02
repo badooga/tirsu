@@ -20,8 +20,6 @@ class RelCoords:
 
         self.ctx.translate(self.origin.real, self.origin.imag)
         self.ctx.rotate(-self.delta)
-        # self.ctx.translate(self.z0.real, self.z0.imag)
-
         self.ctx.move_to(self.z0.real, self.z0.imag)
 
     def __exit__(self, cls, value, traceback) -> Literal[True]:

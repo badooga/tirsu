@@ -5,7 +5,7 @@ from typing import Literal, Self
 
 import numpy as np
 
-from tirsu.language import alphabet
+from . import alphabet
 
 __all__ = ["TirStr", "TirWord"]
 
