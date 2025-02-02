@@ -133,7 +133,7 @@ class DrawLetter(DrawShape):  # pylint: disable=too-many-public-methods
         self.vbar(self.r2 - 7.5, self.delta)
 
     def ea(self) -> None:
-        self.e()
+        self.e(0.25)
         self.a()
 
     def apostrophe(self) -> None:
