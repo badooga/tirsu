@@ -22,7 +22,7 @@ class DrawLetter(DrawShape):  # pylint: disable=too-many-public-methods
         self.delta = delta
 
     def beginning(self) -> None:
-        self.spoke(self.r1, self.delta, -self.h_max / 4.5)
+        self.spoke(self.r1, self.delta, -self.r1 / 1.5)
 
     def a(self) -> None:
         self.arms(self.r2, self.delta, direction=-1, spoke=True, h=self.h_max)
