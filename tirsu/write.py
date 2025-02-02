@@ -3,9 +3,9 @@ from typing import Literal
 
 import cairo
 
-from draw import DrawLetter
-from draw.grid import Grid
-from language import TirWord
+from .draw import DrawLetter
+from .draw.grid import Grid
+from .language import TirWord
 
 
 def write_word(
