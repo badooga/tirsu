@@ -1,4 +1,4 @@
-This package can be used to generate [Tir'su](https://forgottenrealms.fandom.com/wiki/Gith_language) glyphs from English characters. For more information, see [this](https://archiveofourown.org/works/52500334) resource.
+This package can be used to generate an SVG file of [Tir'su](https://forgottenrealms.fandom.com/wiki/Gith_language) glyphs from English characters. For more information on the Tir'su language, see [this](https://archiveofourown.org/works/52500334) resource.
 
 ### Usage
 For basic usage, simply run `python tirsu/main.py` and supply the requested inputs. If you use this from within a Python script, you can instead use `from tirsu import write_tirsu`.
@@ -6,7 +6,7 @@ For basic usage, simply run `python tirsu/main.py` and supply the requested inpu
 Note that while commas are ignored, a period, question mark, or exclamation point will indicate a line break. Other characters, such as numbers, will raise an error.
 
 ### Examples
-Below are examples of Tir'su glyphs.
+Below are examples of Tir'su glyphs generated with this tool.
 
 Ch'mar, zal'a Vlaakith (Vlaakith's will above all), githyanki style
 
