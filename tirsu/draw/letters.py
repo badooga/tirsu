@@ -49,7 +49,7 @@ class DrawLetter(DrawShape):  # pylint: disable=too-many-public-methods
 
     def g(self) -> None:
         self.c()
-        self.vbar(self.r2 - 8, self.delta)
+        self.vbar(self.r2 - 10, self.delta)
 
     def h(self) -> None:
         self.d()
