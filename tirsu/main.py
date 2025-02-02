@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from language.tir import TirError
-from write import write_tirsu
+from .language.tir import TirError
+from .write import write_tirsu
 
 while True:
     p = input("Filepath for SVG: ")
