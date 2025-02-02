@@ -9,6 +9,8 @@ from tirsu.language import alphabet
 
 __all__ = ["TirStr", "TirWord"]
 
+class TirError(TypeError):
+    pass
 
 class TirStr(UserString):
     """A string that uses the Tir alphabet.
@@ -22,7 +24,7 @@ class TirStr(UserString):
         """Initializes the string from a sequence.
 
         Raises:
-            ValueError: If characters not in the Tir alphabet are found.
+            TirError: If characters not in the Tir alphabet are found.
         """
 
         super().__init__(seq)
@@ -30,7 +32,7 @@ class TirStr(UserString):
 
         invalid = set(self.data.lower()) - alphabet.tir_alphabet - set(" ")
         if invalid:
-            raise ValueError(f"Invalid characters found: {invalid}")
+            raise TirError(f"Invalid characters found: {invalid}")
 
     def __iter__(self):
         yield from self.letters
@@ -69,11 +71,11 @@ class TirWord(TirStr):
             Defaults to 1.
 
         Raises:
-            ValueError: If the supplied TirStr isn't exactly one word.
+            TirError: If the supplied TirStr isn't exactly one word.
         """
 
         if len(word.split()) != 1:
-            raise ValueError("Input must be exactly one word")
+            raise TirError("Input must be exactly one word")
 
         super().__init__(word)
 
