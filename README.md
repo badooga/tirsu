@@ -12,11 +12,11 @@ Ch'mar, zal'a Vlaakith (Vlaakith's will above all), githyanki style
 
 <img src="examples/zala.svg" alt="Tir'su glyphs for the githyanki phrase Ch'mar, zal'a Vlaakith" >
 
-Rrakkma (illithid hunting party), githyanki style
+Rrakkma (illithid hunting party), githzerai style
 
 <img src="examples/rrakkma.svg" alt="Tir'su glyphs for the githzerai word rrakkma" >
 
-Ch'mar, zal'a Orpheus! Mha stil'na forjun inyeri! (Orpheus' will above all! May the Comet blaze my path forward!)
+Ch'mar, zal'a Orpheus! Mha stil'na forjun inyeri! (Orpheus' will above all! May the Comet blaze my path forward!), githyanki style
 
 <img src="examples/orpheus.svg" alt="Tir'su glyphs for the githyanki phrase Ch'mar, zal'a Orpheus! Mha stil'na forjun inyeri!" >
 
