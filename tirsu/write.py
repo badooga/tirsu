@@ -56,7 +56,10 @@ def write_tirsu(
     ny = len(sentences)
     nx = max(map(len, sentences))
 
-    grid = Grid(nx, ny, radius, 2 * DrawLetter.h_max)
+    radius = radius**1.25
+    padding = max(radius, DrawLetter.h_max) + DrawLetter.h_max
+
+    grid = Grid(nx, ny, radius, padding)
     centers = grid.centers
 
     with cairo.SVGSurface(str(path), grid.x, grid.y) as surface:
