@@ -1,31 +1,25 @@
+from contextlib import contextmanager
 from typing import Literal
 
 import cairo
 import numpy as np
 
-__all__ = ["RelCoords", "DrawShape"]
+__all__ = ["rel_coords", "DrawShape"]
 
 
-class RelCoords:
-    def __init__(
-        self, ctx: cairo.Context, o: complex, z0: complex, delta: float = np.pi / 2
-    ) -> None:
-        self.ctx = ctx
-        self.origin = o
-        self.z0 = z0
-        self.delta = delta
-
-    def __enter__(self) -> None:
-        self.ctx.save()
-
-        self.ctx.translate(self.origin.real, self.origin.imag)
-        self.ctx.rotate(-self.delta)
-        self.ctx.move_to(self.z0.real, self.z0.imag)
-
-    def __exit__(self, cls, value, traceback) -> Literal[True]:
-        self.ctx.stroke()
-        self.ctx.restore()
-        return True
+@contextmanager
+def rel_coords(
+    ctx: cairo.Context, origin: complex, z0: complex, delta: float = np.pi / 2
+):
+    ctx.save()
+    try:
+        ctx.translate(origin.real, origin.imag)
+        ctx.rotate(-delta)
+        ctx.move_to(z0.real, z0.imag)
+        yield
+    finally:
+        ctx.stroke()
+        ctx.restore()
 
 
 class DrawShape:
@@ -54,7 +48,7 @@ class DrawShape:
             to be considered as the real axis. Defaults to 0.
         """
 
-        with RelCoords(self.ctx, self.origin, z0, delta):
+        with rel_coords(self.ctx, self.origin, z0, delta):
             vec = L * np.exp(1j * theta)
             self.ctx.rel_line_to(vec.real, vec.imag)
 
@@ -87,7 +81,7 @@ class DrawShape:
             Defaults to False.
         """
 
-        with RelCoords(self.ctx, self.origin, r, delta):
+        with rel_coords(self.ctx, self.origin, r, delta):
             # transforms the space so that we can draw a circular arc
 
             t0, t1 = min(t0, t1), max(t0, t1)
@@ -104,7 +98,7 @@ class DrawShape:
                 self.ctx.fill()
 
     def circle(self, center: complex, R: float, fill: bool = False) -> None:
-        with RelCoords(self.ctx, self.origin, center, 0):
+        with rel_coords(self.ctx, self.origin, center, 0):
             self.ctx.rel_move_to(R, 0)
             self.ctx.arc(center.real, center.imag, R, 0, 2 * np.pi)
             if fill:
@@ -129,7 +123,7 @@ class DrawShape:
         up = L * vec
         down = np.conj(up)
 
-        with RelCoords(self.ctx, self.origin, r, delta):
+        with rel_coords(self.ctx, self.origin, r, delta):
             if spoke:
                 if direction == -1 and not down_only:
                     self.ctx.rel_move_to(-0.25, 0)
@@ -167,7 +161,7 @@ class DrawShape:
         self.arms(r, delta, L, direction=direction, spoke=spoke, h=h, triangle=True)
 
     def crescent(self, r: float, delta: float = np.pi / 2, s: int = 6) -> None:
-        with RelCoords(self.ctx, self.origin, r, delta):
+        with rel_coords(self.ctx, self.origin, r, delta):
             self.ctx.rel_move_to(0, s / 2)
             self.ctx.rel_line_to(0, -s)
             self.ctx.rel_line_to(s, 0)
