@@ -134,10 +134,7 @@ class DrawShape:
                     self.ctx.rel_move_to(0.25, 0)
             if down_only:
                 self.ctx.rel_line_to(down.real, down.imag)
-            elif triangle and direction == 1:
-                self.ctx.rel_line_to(up.real, up.imag)
-                self.ctx.rel_line_to(0, L * np.sqrt(2))
-            elif triangle and direction == -1:
+            elif triangle:
                 self.ctx.rel_line_to(up.real, up.imag)
                 self.ctx.rel_line_to(0, L * np.sqrt(2))
             else:
