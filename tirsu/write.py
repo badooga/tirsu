@@ -3,10 +3,9 @@ from typing import Literal
 
 import cairo
 
-from .grid import Grid
-from ..draw import DrawLetter
-
-from ..language import TirWord
+from draw import DrawLetter
+from draw.grid import Grid
+from language import TirWord
 
 
 def write_word(
@@ -14,6 +13,7 @@ def write_word(
     word: TirWord,
     center: complex,
     radius: float,
+    scale: float = 1,
 ) -> None:
     draw = DrawLetter(ctx, center, radius)
     draw.circle(0, radius)
@@ -36,7 +36,14 @@ def write_tirsu(
     orientation: Literal[-1, 1] = 1,
     scale: float = 1,
 ) -> None:
-    text = text.replace(",", "").replace(".", "\n").replace("?", "\n").replace("!", "\n").strip().lower()
+    text = (
+        text.replace(",", "")
+        .replace(".", "\n")
+        .replace("?", "\n")
+        .replace("!", "\n")
+        .strip()
+        .lower()
+    )
 
     sentences: list[list[TirWord]] = []
 
@@ -56,7 +63,8 @@ def write_tirsu(
 
     with cairo.SVGSurface(str(path), grid.x, grid.y) as surface:
         ctx = cairo.Context(surface)
+        ctx.save()
 
         for sentence, row in zip(sentences, centers):
             for word, center in zip(sentence, row):
-                write_word(ctx, word, center, radius)
+                write_word(ctx, word, center, radius, scale)
