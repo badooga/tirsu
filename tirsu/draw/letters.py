@@ -18,159 +18,155 @@ class DrawLetter(DrawShape):  # pylint: disable=too-many-public-methods
     ) -> None:
         super().__init__(ctx, o)
         self.r1 = r1
-        self.r2 = r1 + self.h_max
+        self.r2 = self.r1 + self.h_max
         self.delta = delta
 
-    def beginning(self) -> None:
-        self.spoke(self.r1, self.delta, -self.r1 / 1.5)
+    def write(self, vecs: list[complex], z0: complex = 0) -> None:
+        self.draw(vecs, self.r1 + z0, self.delta)
 
-    def a(self) -> None:
-        self.arms(self.r2, self.delta, direction=-1, spoke=True, h=self.h_max)
+    def beginning(self) -> None:
+        self.i(-self.r1 / 1.5)
+
+    def a(self, height: float = h_max) -> None:
+        self.i(height)
+        self.write(self.arms(direction=-1), height)
 
     def b(self) -> None:
         self.y()
-        self.vbar(self.r2 - 8, self.delta)
+        self.e(self.h_max - 8)
 
     def c(self, shift: float = 0) -> None:
-        self.o(shift)
-        self.vbar(self.r2 - 8 + shift, self.delta)
+        self.o(self.h_max + shift)
+        self.e(self.h_max - 8 + shift)
 
     def d(self) -> None:
         self.a()
-        self.vbar(self.r2 - 8, self.delta)
+        self.e(self.h_max - 8)
 
-    def e(self, shift: float = 0) -> None:
-        self.spoke(self.r1, self.delta, self.h_max + shift)
-        self.vbar(self.r2 + shift, self.delta)
+    def e(self, height: float = h_max) -> None:
+        self.i(height)
+        self.write(self.vbar(), height)
 
-    def f(self, shift: float = 0) -> None:
-        self.e(shift)
-        self.vbar(self.r2 + shift - 2, self.delta)
+    def f(self, height: float = h_max) -> None:
+        self.e(height)
+        self.e(height - 2)
 
     def g(self) -> None:
-        self.c()
-        self.vbar(self.r2 - 10, self.delta)
+        self.o()
+        self.f(self.h_max - 8)
 
     def h(self) -> None:
-        self.d()
-        self.vbar(self.r2 - 10, self.delta)
+        self.a()
+        self.f(self.h_max - 8)
 
-    def i(self) -> None:
-        self.spoke(self.r1, self.delta, self.h_max)
+    def i(self, height: float = h_max) -> None:
+        self.write(self.spoke(height))
 
-    def j(self) -> None:
-        self.arms(
-            self.r2,
-            self.delta,
-            10,
-            direction=-1,
-            spoke=True,
-            h=self.h_max,
-            down_only=True,
-        )
+    def j(self, height: float = h_max, L: float = 10) -> None:
+        vecs = self.spoke(height) + self.arms(L, direction=-1)[2:]
+        self.write(vecs)
 
-    def k(self) -> None:
-        self.j()
-        self.arms(self.r2 - 3, self.delta, 10, direction=-1, down_only=True)
+    def k(self, height: float = h_max, L: float = 10, dy: float = 3) -> None:
+        self.j(height, L)
+        self.j(height - dy, L)
 
     def l(self) -> None:  # noqa: E743
-        self.spoke(self.r1, self.delta, self.h_max - 5 * np.sqrt(2))
-        self.triangle(self.r2, self.delta, direction=-1)
+        self.i(self.h_max - 5 * 2**0.5)
+        self.write(self.triangle(direction=-1), self.h_max)
 
     def m(self) -> None:
         self.l()
-        self.vbar(self.r2 - 2 - 5 * np.sqrt(2), self.delta)
+        self.e(self.h_max - 5 * 2**0.5 - 2)
 
     def n(self) -> None:
-        self.m()
-        self.vbar(self.r2 - 4 - 5 * np.sqrt(2), self.delta)
+        self.l()
+        self.f(self.h_max - 5 * 2**0.5 - 2)
 
-    def o(self, shift: float = 0) -> None:
-        self.spoke(self.r1, self.delta, self.h_max - 6.5 + shift)
-        self.ellipse(self.r2 - 3 + shift, self.delta, 3, 5)
+    def o(self, height: float = h_max, spoke: bool = True) -> None:
+        if spoke:
+            self.i(height - 6)
+        self.write(self.ellipse(), height)
 
     def p(self) -> None:
         self.a()
-        self.arms(self.r2 - 3, self.delta, 10, direction=-1, down_only=True)
+        self.j(self.h_max - 3)
 
     def q(self) -> None:  # noqa: E743
-        self.spoke(self.r1, self.delta, self.h_max - 5 * np.sqrt(2))
-        self.triangle(self.r2 - 5 * np.sqrt(2), self.delta, direction=1)
+        height = self.h_max - 5 * 2**0.5
+        self.i(height)
+        self.write(self.triangle(), height)
 
     def r(self) -> None:
-        self.b()
-        self.vbar(self.r2 - 11, self.delta)
+        self.y()
+        self.f(self.h_max - 8)
 
     def s(self, shift: float = 0, L: float = 10) -> None:
-        self.o(shift)
-        self.line(self.r2 + shift - 7.5, self.delta, L, 3 * np.pi / 4)
+        self.o(self.h_max + shift)
+        self.j(self.h_max - 7.5 + shift, L)
 
-    def t(self) -> None:
-        self.s()
-        self.line(self.r2 - 10.5, self.delta, 10, 3 * np.pi / 4)
+    def t(self, shift: float = 0, L: float = 10, dy: float = 3) -> None:
+        self.o(self.h_max + shift)
+        self.k(self.h_max - 7.5 + shift, L, dy)
 
     def u(self, shift: float = 0) -> None:
-        self.spoke(self.r1, self.delta, self.h_max - 6 + shift)
-        self.ellipse(self.r2 + shift, self.delta, 6, 5, -3 * np.pi / 2, -np.pi / 2)
+        self.i(self.h_max - 6 + shift)
+        self.write(self.ellipse(6, 5, -3 * np.pi / 2, -np.pi / 2), self.h_max + 5j + shift)
 
     def v(self) -> None:
         self.u()
-        self.vbar(self.r2 - 7.5, self.delta)
+        self.e(self.h_max - 7.5)
 
     def w(self) -> None:
-        self.v()
-        self.vbar(self.r2 - 9.5, self.delta)
+        self.u()
+        self.f(self.h_max - 7.5)
 
     def x(self) -> None:
-        self.spoke(self.r1, self.delta, self.h_max - 6)
-        self.crescent(self.r2 - 6, self.delta)
+        height = self.h_max - 6
+        self.i(height)
+        self.write(self.crescent(), height)
 
     def y(self) -> None:
-        self.arms(self.r2 - 7, self.delta, spoke=True, h=self.h_max - 7)
+        height = self.h_max - 7
+        self.i(height)
+        self.write(self.arms(), height)
 
     def z(self) -> None:
         self.x()
-        self.vbar(self.r2 - 7.5, self.delta)
+        self.e(self.h_max - 7.5)
 
     def ea(self) -> None:
-        self.e(0.25)
+        self.e(self.h_max + 0.25)
         self.a()
 
     def apostrophe(self) -> None:
-        self.spoke(self.r1, self.delta, self.h_max - 9)
-        self.ellipse(self.r1 - 1.5, self.delta, 0.2, 0.2, 0, 3 * np.pi)
+        self.i(self.h_max - 9)
+        self.write(self.ellipse(0.2, 0.2, t1=3 * np.pi), - 1.5)
 
     def oa(self) -> None:
         self.o()
-        self.arms(self.r2 - 7.5, self.delta, direction=-1)
+        self.a(self.h_max - 7.5)
 
     def oi(self) -> None:
-        dr = 5 * np.sqrt(2)
-        self.spoke(self.r1, self.delta, self.h_max - 6.5 - dr)
-        self.ellipse(self.r2 - 3 - dr, self.delta, 3, 5)
-        self.arms(self.r2 - dr + 0.25, self.delta)
+        height = self.h_max - 5 * 2**0.5
+        self.o(height)
+        self.write(self.arms(), height + 0.25)
 
     def ou(self) -> None:
         self.u(-7)
-        self.ellipse(self.r2 - 3.5, self.delta, 3, 5)
+        self.o(self.h_max - 2, False)
 
     def ch(self) -> None:
-        dr = -2 + 5 * np.sqrt(2)
-        self.spoke(self.r1, self.delta, self.h_max - 6.5 - dr)
-        self.ellipse(self.r2 - 3 - dr, self.delta, 3, 5)
-        self.vbar(self.r2 - 8 - dr, self.delta)
-        self.arms(self.r2, self.delta, direction=-1)
+        self.c(2 - 5 * 2**0.5)
+        self.write(self.arms(direction=-1), self.h_max)
 
     def sh(self) -> None:
-        dr = -2.5 + 5 * np.sqrt(2)
-        self.s(-dr, 7)
-        self.arms(self.r2, self.delta, direction=-1)
+        self.s(2.5 - 5 * 2**0.5, 7)
+        self.write(self.arms(direction=-1), self.h_max)
 
     def th(self) -> None:
-        dr = -2.5 + 5 * np.sqrt(2)
-        self.sh()
-        self.line(self.r2 - 10.5 - dr, self.delta, 7, 3 * np.pi / 4)
+        self.t(2.5 - 5 * 2**0.5, 7, 2.5)
+        self.write(self.arms(direction=-1), self.h_max)
 
     def zh(self) -> None:
-        self.z()
-        self.vbar(self.r2 - 9.5, self.delta)
+        self.x()
+        self.f(self.h_max - 7.5)
